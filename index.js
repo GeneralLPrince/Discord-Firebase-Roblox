@@ -7,9 +7,9 @@ const client = new discord.Client();
 
 const botToken = process.env.TOKEN
 
-//--------------Edit here--------------//
-
 const nbx = require('noblox.js');
+
+//--------------Edit here--------------//
 
 const banRole = 'Moderator' 
 const unbanRole = 'Moderator'
