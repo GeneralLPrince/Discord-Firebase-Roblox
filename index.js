@@ -9,6 +9,9 @@ const botToken = process.env.TOKEN
 
 const nbx = require('noblox.js');
 
+const http = require("http");
+http.createServer((_, res) => res.end("Ooooo! HTTP working, nice work I guess?")).listen(8080)
+
 //--------------Edit here--------------//
 
 const banRole = 'Moderator' 
