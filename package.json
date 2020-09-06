@@ -1,0 +1,20 @@
+{
+  "name": "FarEnviousDatabase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "dotenv": "^8.2.0",
+    "firebase": "^7.19.1",
+    "firebase-admin": "^9.1.1",
+    "noblox.js": "^4.7.2",
+    "path": "^0.12.7"
+  }
+}
