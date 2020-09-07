@@ -2,28 +2,38 @@ var firebase = require('firebase')
 
 const dotconfig = require('dotenv').config();
 
+const fs = require('fs');
 const discord = require("discord.js");
 const client = new discord.Client();
 
 const botToken = process.env.TOKEN
 
-const nbx = require('noblox.js');
+client.commands = new discord.Collection();
+
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
+}
 
 const http = require("http");
-http.createServer((_, res) => res.end("Ooooo! HTTP working, nice work I guess?")).listen(8080)
+http.createServer((_, res) => res.end("Alive")).listen(8080)
+
+const nbx = require('noblox.js');
 
 //--------------Edit here--------------//
 
 const banRole = 'Moderator' 
 const unbanRole = 'Moderator'
 const prefix = '!'
-const botStatus = 'Developed by GeneralLPrince'
+const botStatus = 'Developed by GeneralLPrince' 
 
 //-------------------------------------//
 
 client.on("ready", () => {
   console.log("Bot online");
-  client.user.setPresence({ activity: { name: botStatus }, status: 'online' })
+  client.user.setPresence({ activity: { name: botStatus }, status: 'online' });
 });
 
 var config = {
@@ -46,62 +56,34 @@ client.on("message", message => {
 
   if (command === 'ban') {
 
-    const victim = args[0]
+    const suspect = args[0]
     const reason = args.slice(1).join(" "); 
 
     if(!message.member.roles.cache.some(role => role.name === banRole)) {
       return message.channel.send("You do not have permissions to run the command. Role required: `"+banRole+"`")
     }
 
-    if (!victim) {
+    if (!suspect) {
       return message.channel.send("You forgot the username, please use this format: `!ban [Username][banReason]`")
     }
 
     if (!reason) {
       return message.channel.send("You forgot the ban reason, please use this format: `!ban [Username][banReason]`")
     }
-
-    async function exec() {
-      const userId = await nbx.getIdFromUsername(victim).catch(e => "User not found");
-      if (userId !== "User not found") {
-        const playerName = await nbx.getUsernameFromId(userId)
-        var ref = database.ref("Bans");
-        var usersRef = ref.child(userId);
-        usersRef.set({
-          Moderator: message.member.user.tag,
-          Reason: reason
-          });
-          return message.channel.send("`"+playerName+"` has been banned by: `"+message.member.user.tag+"` for `"+reason+"`")
-      } else {
-        return message.channel.send("User does not exist, please use this format: `!ban [Username][banReason]`")
-      }
-      }
-      exec()
+    client.commands.get("ban").execute(suspect, reason, message, database)
     }
 
 if (command === 'unban') {
-  const unbanPlayer = args[0]
+  const suspect = args[0]
 
   if(!message.member.roles.cache.some(role => role.name === unbanRole)) {
     return message.channel.send("You do not have permissions to run the command. Role required: `"+banRole+"`")
   }
 
-  if (!unbanPlayer) {
+  if (!suspect) {
     return message.channel.send("You forgot the username, please use this format: `!unban [Username]`")
   }
-
-  async function exec() {
-    const userId = await nbx.getIdFromUsername(unbanPlayer).catch(e => "User not found");
-    if (userId !== "User not found") {
-      const playerName = await nbx.getUsernameFromId(userId)
-      var ref = firebase.database().ref("Bans/"+userId);
-      ref.remove()
-      .then(function() {
-        message.channel.send("`"+playerName+"` has been unbanned.")
-        })
-      }
-    }
-    exec()
+  client.commands.get("unban").execute(suspect, message, firebase)
   }  
 })
 
