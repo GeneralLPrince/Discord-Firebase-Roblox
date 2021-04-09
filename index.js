@@ -81,12 +81,12 @@ if (command === 'unban') {
   }
 
   	
-  if (command == 'checkban') {
+  if (command == 'getban') {
     const suspect = args[0]
     if (!suspect) {
       return message.channel.send("You forgot the username, please use this format: `!checkban [Username]`")
     }
-    client.commands.get("checkban").execute(suspect, message, firebase)
+    client.commands.get("getban").execute(suspect, message, firebase)
   }
 	
   if (!suspect) {
