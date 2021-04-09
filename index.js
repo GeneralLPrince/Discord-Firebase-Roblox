@@ -54,6 +54,14 @@ client.on("message", message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+if (command == 'getban') {
+    const suspect = args[0]
+    if (!suspect) {
+      return message.channel.send("You forgot the username, please use this format: `!checkban [Username]`")
+    }
+    client.commands.get("getban").execute(suspect, message, firebase)
+  }
+	
   if (command === 'ban') {
 
     const suspect = args[0]
@@ -78,15 +86,6 @@ if (command === 'unban') {
 
   if(!message.member.roles.cache.some(role => role.name === unbanRole)) {
     return message.channel.send("You do not have permissions to run the command. Role required: `"+banRole+"`")
-  }
-
-  	
-  if (command == 'getban') {
-    const suspect = args[0]
-    if (!suspect) {
-      return message.channel.send("You forgot the username, please use this format: `!checkban [Username]`")
-    }
-    client.commands.get("getban").execute(suspect, message, firebase)
   }
 	
   if (!suspect) {
