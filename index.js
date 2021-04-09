@@ -80,6 +80,15 @@ if (command === 'unban') {
     return message.channel.send("You do not have permissions to run the command. Role required: `"+banRole+"`")
   }
 
+  	
+  if (command == 'checkban') {
+    const suspect = args[0]
+    if (!suspect) {
+      return message.channel.send("You forgot the username, please use this format: `!checkban [Username]`")
+    }
+    client.commands.get("checkban").execute(suspect, message, firebase)
+  }
+	
   if (!suspect) {
     return message.channel.send("You forgot the username, please use this format: `!unban [Username]`")
   }
