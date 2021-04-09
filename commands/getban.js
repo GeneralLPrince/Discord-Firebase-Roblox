@@ -1,6 +1,6 @@
 module.exports = {
-	name: 'checkban',
-	description: 'Checkban command',
+	name: 'getban',
+	description: 'Getban command',
 	
     execute(suspect, message, firebase) {
         const nbx = require('noblox.js');
