@@ -24,7 +24,7 @@ module.exports = {
                     var IsBanned = snapshot.child(UserId).hasChildren()
 
                     if (IsBanned == false) {
-                        message.channel.send({
+                        return message.channel.send({
                             embed: {
                                 "type": "rich",
                                 "color": 3092790,					
@@ -34,24 +34,31 @@ module.exports = {
                         }) 
                     }
                     else if (IsBanned == true) {
-                        Reference.once("value", function(snapshot) {
-                            snapshot.forEach(function(childSnapshot) {
-                                const Moderator = childSnapshot.val().Moderator
-                                const Reason = childSnapshot.val().Reason
-                                message.channel.send({
-                                    embed: {
-                                        "type": "rich",
-                                        "color": 3092790,					
-                                        "title": "",
-                                        "description": "**Username: **"+suspect+"**\nReason:** "+Reason+"\n**Moderator:** "+Moderator,
-                                    }
-                                })   
-                            })
+                        var PlayerReference = firebase.database().ref("Bans/"+UserId+"/")
+                        PlayerReference.once("value", function(snapshot) {
+                            console.log(snapshot.val().Moderator)
+                            const Moderator = snapshot.val().Moderator
+                            const Reason = snapshot.val().Reason   
+                            return message.channel.send({
+                                embed: {
+                                    "type": "rich",
+                                    "color": 3092790,					
+                                    "title": "",
+                                    "description": "**Username: **"+suspect+"**\nReason:** "+Reason+"\n**Moderator:** "+Moderator,
+                                }
+                            
+                            }) 
+                    
                         })
+                
                     }
+            
                 })
+        
             }
+    
         }
+    
         exec()
-    }
+    } 
 }; 
