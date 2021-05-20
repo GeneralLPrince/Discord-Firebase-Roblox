@@ -54,10 +54,38 @@ client.on("message", message => {
   const args = message.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  //Embed shit
+  const Discord = require('discord.js');
+
+  const GetError = new Discord.MessageEmbed()
+  .setColor('992d22')
+  .addFields(
+      {name: 'Error!', value:"You forgot the username, please use this format: `!checkban [Username]`"}
+  )
+
+  const BanError = new Discord.MessageEmbed()
+  .setColor('992d22')
+  .addFields(
+      {name: 'Error!', value:"You forgot the username, please use this format: `!ban [Username][banReason]`"}
+  )
+  const InvalidPermissions = new Discord.MessageEmbed()
+	.setColor('#992d22')
+	.addFields({ name: 'Error!', value: 'Insufficent Permissions.' });
+
+  const UnbanError = new Discord.MessageEmbed()
+  .setColor('992d22')
+  .addFields(
+      {name: 'Error!', value:"You forgot the username, please use this format: `!unban [Username]`"}
+  )
+
+
+
+  //Command shit
+
 if (command == 'getban') {
     const suspect = args[0]
     if (!suspect) {
-      return message.channel.send("You forgot the username, please use this format: `!checkban [Username]`")
+      return message.channel.send(GetError)
     }
     client.commands.get("getban").execute(suspect, message, firebase)
   }
@@ -68,15 +96,15 @@ if (command == 'getban') {
     const reason = args.slice(1).join(" "); 
 
     if(!message.member.roles.cache.some(role => role.name === banRole)) {
-      return message.channel.send("You do not have permissions to run the command. Role required: `"+banRole+"`")
+      return message.channel.send(InvalidPermissions)
     }
 
     if (!suspect) {
-      return message.channel.send("You forgot the username, please use this format: `!ban [Username][banReason]`")
+      return message.channel.send(BanError)
     }
 
     if (!reason) {
-      return message.channel.send("You forgot the ban reason, please use this format: `!ban [Username][banReason]`")
+      return message.channel.send(BanError)
     }
     client.commands.get("ban").execute(suspect, reason, message, database)
     }
@@ -85,11 +113,11 @@ if (command === 'unban') {
   const suspect = args[0]
 
   if(!message.member.roles.cache.some(role => role.name === unbanRole)) {
-    return message.channel.send("You do not have permissions to run the command. Role required: `"+banRole+"`")
+    return message.channel.send(InvalidPermissions)
   }
 	
   if (!suspect) {
-    return message.channel.send("You forgot the username, please use this format: `!unban [Username]`")
+    return message.channel.send(UnbanError)
   }
   client.commands.get("unban").execute(suspect, message, firebase)
   }  
