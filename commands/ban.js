@@ -16,7 +16,7 @@ module.exports = {
           Reason: reason
           });
 
-          const BanSuccess = new Discord.MessageEnbed()
+          const BanSuccess = new Discord.MessageEmbed()
           .setColor('#07C902')
           .setDescription('Success!')
           .addFields(
